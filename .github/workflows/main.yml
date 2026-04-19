@@ -60,5 +60,31 @@ jobs:
     needs: docker
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder para Deploy
-        run: echo "Aquí configuraremos el despliegue a la EC2 en la Actividad 4"
+      - name: Despliegue del Receptor en EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # 1. Autenticarse en ECR
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URI }}
+            
+            # 2. Detener y eliminar el contenedor anterior si existe
+            # Usamos un nombre específico para no chocar con los otros servicios
+            docker stop receptor-container || true
+            docker rm receptor-container || true
+            
+            # 3. Descargar la imagen más reciente
+            docker pull ${{ secrets.ECR_REPOSITORY_URI }}:latest
+            
+            # 4. Correr el contenedor (SIN el parámetro -p)
+            docker run -d --name receptor-container \
+              -e SQS_URL=${{ secrets.SQS_URL }} \
+              -e SNS_ARN=${{ secrets.SNS_ARN }} \
+              -e DYNAMO_TABLE=${{ secrets.DYNAMO_TABLE }} \
+              -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+              -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+              -e AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }} \
+              -e AWS_REGION=us-east-1 \
+              ${{ secrets.ECR_REPOSITORY_URI }}:latest
