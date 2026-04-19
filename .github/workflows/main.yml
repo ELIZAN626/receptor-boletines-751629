@@ -55,7 +55,7 @@ jobs:
           docker push $ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REPOSITORY:latest
 
-  # Actividad 4: Etapa de Deploy
+  # Actividad 4: Etapa de Deploy 1
   deploy:
     needs: docker
     runs-on: ubuntu-latest
