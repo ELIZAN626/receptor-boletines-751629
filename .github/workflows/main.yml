@@ -87,4 +87,5 @@ jobs:
               -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
               -e AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }} \
               -e AWS_REGION=us-east-1 \
+              -e PYTHONUNBUFFERED=1 \
               ${{ secrets.ECR_REPOSITORY_URI }}:latest
