@@ -1,13 +1,14 @@
+import os
 import boto3
 import json
 import uuid
 import time
 
 # configuracion
-cola_url = "https://sqs.us-east-1.amazonaws.com/515162739424/cola-boletines"
-sns_arn = "arn:aws:sns:us-east-1:515162739424:boletines_tema"
-tabla_db = "boletines"
-region = "us-east-1"
+cola_url = os.getenv("SQS_URL")
+sns_arn = os.getenv("SNS_ARN")
+tabla_db = os.getenv("DYNAMO_TABLE")
+region = os.getenv("AWS_REGION", "us-east-1")
 
 # clientes de aws
 sqs = boto3.client("sqs", region_name=region)
