@@ -1,0 +1,39 @@
+name: CI/CD Receptor Boletines
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # Actividad 2: Etapa de Build (hacemos una validacion de codigo)
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalación de dependencias (Build)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+  # Actividad 3: Etapa de Docker
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder para Docker
+        run: echo "Aquí configuraremos el push a ECR en la Actividad 3"
+
+  # Actividad 4: Etapa de Deploy
+  deploy:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder para Deploy
+        run: echo "Aquí configuraremos el despliegue a la EC2 en la Actividad 4"
